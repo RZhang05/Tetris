@@ -1,3 +1,9 @@
+/*
+ * Raymond Zhang
+ * Mr. Benum
+ * ICS4UE
+ * December 12, 2018
+ */
 import java.awt.*;
 import javax.swing.*;
 
