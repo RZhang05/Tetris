@@ -10,8 +10,8 @@ Contributors:
 * It will be a Tetris implementation
 
 ### Main Tasks
-- [ ] Tetris framework (block shapes and gameplay)
-- [ ] Scoring
+- [x] Tetris framework (block shapes and gameplay)
+- [x] Scoring
 - [ ] Main Menu
 - [ ] Music
 - [ ] High Scores
