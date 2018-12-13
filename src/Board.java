@@ -11,10 +11,10 @@ import javax.swing.*;
 
 public class Board extends JPanel implements ActionListener {
 	//fields
-	private final int BOARD_WIDTH = 10, BOARD_HEIGHT = 24, DELAY = 400;
-	private Timer timer;
+	private final int BOARD_WIDTH = 10, BOARD_HEIGHT = 24;
+	private Timer timer, seconds;
 	private boolean isFallingFinished = false, isStarted = false, isPaused = false;
-	private int curScore = 0, curX = 0, curY = 0;
+	private int curScore = 0, curX = 0, curY = 0, curms, delay = 400;
 	private JLabel statusbar;
 	private BlockHolder placeholder;
 	private Block curPiece, pieceHeld;
@@ -30,9 +30,9 @@ public class Board extends JPanel implements ActionListener {
 		setFocusable(true);
 		curPiece = new Block();
 		pieceHeld = new Block();
-		timer = new Timer(DELAY, this);
-		timer.start(); 
-
+		timer = new Timer(delay, this);
+		timer.start();
+		
 		statusbar =  parent.getStatusBar();
 		placeholder = parent.getBlockHolder();
 		board = new Block.Shape[BOARD_WIDTH * BOARD_HEIGHT];
@@ -48,6 +48,12 @@ public class Board extends JPanel implements ActionListener {
 			isFallingFinished = false;
 			newPiece();
 		} else oneLineDown();
+		curms += 400;
+		if(curms == 20000 && delay > 100) {
+			curms = 0;
+			delay -= 50;
+			timer.setDelay(delay);
+		}
 	}
 
 	private int squareWidth() { return (int) getSize().getWidth() / BOARD_WIDTH; }
