@@ -17,24 +17,22 @@ public class Board extends JPanel implements ActionListener {
 	private int curScore = 0, curX = 0, curY = 0, curms, delay = 400;
 	private JLabel statusbar;
 	private BlockHolder placeholder;
-	private Block curPiece, blockHeld, previousBlockHeld;
+	private Block curPiece, blockHeld;
 	private Block.Shape[] board;
 
 	//constructors
 	public Board(Tetris parent) {
 		initBoard(parent);
 	}
-	
+
 	//methods
 	private void initBoard(Tetris parent) {
 		setFocusable(true);
 		curPiece = new Block();
 		blockHeld = new Block();
-		previousBlockHeld = new Block();
-		previousBlockHeld.setShape(Block.Shape.LineShape);
 		timer = new Timer(delay, this);
 		timer.start();
-		
+
 		statusbar =  parent.getStatusBar();
 		placeholder = parent.getBlockHolder();
 		board = new Block.Shape[BOARD_WIDTH * BOARD_HEIGHT];
@@ -166,7 +164,7 @@ public class Board extends JPanel implements ActionListener {
 			statusbar.setText("game over");
 		}
 	}
-	
+
 	private void loadPiece() {
 		curX = BOARD_WIDTH / 2 + 1;
 		curY = BOARD_HEIGHT - 1 + curPiece.minY();
@@ -178,21 +176,18 @@ public class Board extends JPanel implements ActionListener {
 			statusbar.setText("game over");
 		}
 	}
-	
+
 	private void holdBlock() {
 		if(blockHeld.getShape() == Block.Shape.NoShape) {
 			blockHeld = curPiece;
 			isFallingFinished = true;
 			placeholder.update(blockHeld);
 		} else {
-			if(previousBlockHeld.getShape() != curPiece.getShape()) {
-				Block temp = curPiece;
-				curPiece = blockHeld;
-				previousBlockHeld = blockHeld;
-				blockHeld = temp;
-				loadPiece();
-				placeholder.update(blockHeld);
-			}
+			Block temp = curPiece;
+			curPiece = blockHeld;
+			blockHeld = temp;
+			loadPiece();
+			placeholder.update(blockHeld);
 		}
 	}
 
@@ -270,7 +265,7 @@ public class Board extends JPanel implements ActionListener {
 		g.drawLine(x + 1, y + squareHeight() - 1, x + squareWidth() - 1, y + squareHeight() - 1);
 		g.drawLine(x + squareWidth() - 1, y + squareHeight() - 1, x + squareWidth() - 1, y + 1);
 	}
-	
+
 	private void drawIndicator(Graphics g, int x) {
 		Color color = new Color(255,255,255,100);
 		g.setColor(color);
@@ -317,7 +312,7 @@ public class Board extends JPanel implements ActionListener {
 			case KeyEvent.VK_DOWN:
 				oneLineDown();
 				break;
-			
+
 			case KeyEvent.VK_SHIFT:
 				holdBlock();
 				break;
