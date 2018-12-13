@@ -20,11 +20,14 @@ public class Tetris extends JFrame {
 		statusbar = new JLabel("Score: 0");
 		add(statusbar, BorderLayout.NORTH);
 		
-		instructions = new JLabel("<html>\'P\' to pause<br/>"
-				+ "\'A\' to move left<br/>"
-				+ "\'D\' to move right<br/>"
-				+ "\'W\' to rotate right<br/>"
-				+ "\'S\' to rotate left<html>");
+		instructions = new JLabel("<html>\'p\' to pause<br/>"
+				+ "\'left arrow\' to move left<br/>"
+				+ "\'right arrow\' to move right<br/>"
+				+ "\'up arrow\' to rotate left<br/>"
+				+ "\'down arrow to drop block down faster<br/>"
+				+ "\'z\' to rotate right<br/>"
+				+ "\'space\' to drop block down all the way<html>");
+				
 		instructions.setHorizontalAlignment(SwingConstants.CENTER);
 		add(instructions,BorderLayout.SOUTH);
 
@@ -33,7 +36,7 @@ public class Tetris extends JFrame {
 		board.start();
 
 		setTitle("Tetris");
-		setSize(424, 960);
+		setSize(424, 1000);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 	}
