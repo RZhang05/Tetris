@@ -49,7 +49,7 @@ public class Board extends JPanel implements ActionListener {
 			newPiece();
 		} else oneLineDown();
 		curms += 400;
-		if(curms == 20000 && delay > 100) {
+		if(curms >= 20000 && delay > 100) {
 			curms = 0;
 			delay -= 50;
 			timer.setDelay(delay);
