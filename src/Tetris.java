@@ -9,7 +9,8 @@ import javax.swing.*;
 
 public class Tetris extends JFrame {
 
-	private JLabel statusbar, instructions;
+	private JLabel statusbar;
+	private BlockHolder placeholder;
 
 	public Tetris() {
 		initGame();
@@ -17,32 +18,29 @@ public class Tetris extends JFrame {
 
 	private void initGame() {
 		
-		statusbar = new JLabel("Score: 0");
-		add(statusbar, BorderLayout.NORTH);
+		placeholder = new BlockHolder();
+		add(placeholder, BorderLayout.NORTH);
 		
-		instructions = new JLabel("<html>\'p\' to pause<br/>"
-				+ "\'left arrow\' to move left<br/>"
-				+ "\'right arrow\' to move right<br/>"
-				+ "\'up arrow\' to rotate left<br/>"
-				+ "\'down arrow to drop block down faster<br/>"
-				+ "\'z\' to rotate right<br/>"
-				+ "\'space\' to drop block down all the way<html>");
-				
-		instructions.setHorizontalAlignment(SwingConstants.CENTER);
-		add(instructions,BorderLayout.SOUTH);
+		statusbar = new JLabel("Score: 0");
+		add(statusbar, BorderLayout.SOUTH);
 
 		Board board = new Board(this);
 		add(board);
 		board.start();
 
 		setTitle("Tetris");
-		setSize(424, 1000);
+		setSize(350, 940);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
+		pack();
 	}
 
 	public JLabel getStatusBar() {
 		return statusbar;
+	}
+	
+	public BlockHolder getBlockHolder() {
+		return placeholder;
 	}
 	
 	public static void main(String[] args) {

@@ -11,11 +11,12 @@ import javax.swing.*;
 
 public class Board extends JPanel implements ActionListener {
 	//fields
-	private final int BOARD_WIDTH = 20, BOARD_HEIGHT = 40, DELAY = 400;
+	private final int BOARD_WIDTH = 10, BOARD_HEIGHT = 24, DELAY = 400;
 	private Timer timer;
 	private boolean isFallingFinished = false, isStarted = false, isPaused = false;
 	private int curScore = 0, curX = 0, curY = 0;
 	private JLabel statusbar;
+	private BlockHolder placeholder;
 	private Block curPiece, pieceHeld;
 	private Block.Shape[] board;
 
@@ -33,10 +34,12 @@ public class Board extends JPanel implements ActionListener {
 		timer.start(); 
 
 		statusbar =  parent.getStatusBar();
+		placeholder = parent.getBlockHolder();
 		board = new Block.Shape[BOARD_WIDTH * BOARD_HEIGHT];
 		addKeyListener(new TAdapter());
 		clearBoard();
-		setBackground(Color.BLACK	);
+		setBackground(Color.BLACK);
+		setPreferredSize(new Dimension(350,840));
 	}
 
 	@Override
@@ -101,7 +104,6 @@ public class Board extends JPanel implements ActionListener {
 			for(int i=0;i<xs.size();i++) drawIndicator(g, 0+xs.get(i)*squareWidth());
 			for (int i=0;i<4;i++) {
 				int x = curX + curPiece.x(i);
-				if(!xs.contains(x)) xs.add(x);
 				int y = curY - curPiece.y(i);
 				drawSquare(g, 0 + x * squareWidth(), boardTop + (BOARD_HEIGHT - y - 1) * squareHeight(), curPiece.getShape());
 			}
@@ -157,8 +159,29 @@ public class Board extends JPanel implements ActionListener {
 		}
 	}
 	
+	private void loadPiece() {
+		curX = BOARD_WIDTH / 2 + 1;
+		curY = BOARD_HEIGHT - 1 + curPiece.minY();
+
+		if (!tryMove(curPiece, curX, curY)) {
+			curPiece.setShape(Block.Shape.NoShape);
+			timer.stop();
+			isStarted = false;
+			statusbar.setText("game over");
+		}
+	}
+	
 	private void holdBlock() {
-		pieceHeld = curPiece;
+		if(pieceHeld.getShape() == Block.Shape.NoShape) {
+			pieceHeld = curPiece;
+			isFallingFinished = true;
+		} else {
+			Block temp = curPiece;
+			curPiece = pieceHeld;
+			pieceHeld = temp;
+			loadPiece();
+		}
+		placeholder.update(pieceHeld);
 	}
 
 	private boolean tryMove(Block newPiece, int newX, int newY) {
@@ -281,6 +304,10 @@ public class Board extends JPanel implements ActionListener {
 
 			case KeyEvent.VK_DOWN:
 				oneLineDown();
+				break;
+			
+			case KeyEvent.VK_SHIFT:
+				holdBlock();
 				break;
 			}
 		}

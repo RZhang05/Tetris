@@ -51,7 +51,7 @@ public class Block {
 
 		public void setRandomShape() {
 			Random r = new Random();
-			int x = Math.abs(r.nextInt()) % 7 + 1;
+			int x = r.nextInt(7)+1;
 			Shape[] values = Shape.values(); 
 			setShape(values[x]);
 		}
