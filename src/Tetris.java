@@ -6,6 +6,7 @@
  */
 import java.awt.*;
 import java.awt.event.*;
+import javax.imageio.*;
 import javax.swing.*;
 
 public class Tetris extends JFrame {
@@ -19,16 +20,19 @@ public class Tetris extends JFrame {
 		setSize(350, 940);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
-		
+
 		reset();
 	}
-	
+
 	public void reset() {
 		initUI();
 	}
-	
+
 	private void initUI() {
-		start = new JButton("Start");
+		start = new JButton();
+		try {
+			start.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("resources/background.png"))));
+		} catch (Exception ex) {};
 		start.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -36,34 +40,33 @@ public class Tetris extends JFrame {
 				initGame();
 			}
 		});
-		
 		add(start);
 	}
 
 	private void initGame() {
 		placeholder = new BlockHolder();
-		add(placeholder, BorderLayout.NORTH);
-		
+		add(placeholder, BorderLayout.SOUTH);
+
 		statusbar = new JLabel("Score: 0");
-		add(statusbar, BorderLayout.SOUTH);
+		add(statusbar, BorderLayout.NORTH);
 
 		Board board = new Board(this);
 		add(board);
 		board.start();
-		
+
 		board.requestFocus();
-		
+
 		pack();
 	}
 
 	public JLabel getStatusBar() {
 		return statusbar;
 	}
-	
+
 	public BlockHolder getBlockHolder() {
 		return placeholder;
 	}
-	
+
 	public static void main(String[] args) {
 		EventQueue.invokeLater(() -> {
 			Tetris game = new Tetris();

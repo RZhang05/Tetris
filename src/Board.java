@@ -17,7 +17,7 @@ public class Board extends JPanel implements ActionListener {
 	private int curScore = 0, curX = 0, curY = 0, curms, delay = 400;
 	private JLabel statusbar;
 	private BlockHolder placeholder;
-	private Block curPiece, pieceHeld;
+	private Block curPiece, blockHeld, previousBlockHeld;
 	private Block.Shape[] board;
 
 	//constructors
@@ -29,7 +29,9 @@ public class Board extends JPanel implements ActionListener {
 	private void initBoard(Tetris parent) {
 		setFocusable(true);
 		curPiece = new Block();
-		pieceHeld = new Block();
+		blockHeld = new Block();
+		previousBlockHeld = new Block();
+		previousBlockHeld.setShape(Block.Shape.LineShape);
 		timer = new Timer(delay, this);
 		timer.start();
 		
@@ -178,16 +180,20 @@ public class Board extends JPanel implements ActionListener {
 	}
 	
 	private void holdBlock() {
-		if(pieceHeld.getShape() == Block.Shape.NoShape) {
-			pieceHeld = curPiece;
+		if(blockHeld.getShape() == Block.Shape.NoShape) {
+			blockHeld = curPiece;
 			isFallingFinished = true;
+			placeholder.update(blockHeld);
 		} else {
-			Block temp = curPiece;
-			curPiece = pieceHeld;
-			pieceHeld = temp;
-			loadPiece();
+			if(previousBlockHeld.getShape() != curPiece.getShape()) {
+				Block temp = curPiece;
+				curPiece = blockHeld;
+				previousBlockHeld = blockHeld;
+				blockHeld = temp;
+				loadPiece();
+				placeholder.update(blockHeld);
+			}
 		}
-		placeholder.update(pieceHeld);
 	}
 
 	private boolean tryMove(Block newPiece, int newX, int newY) {
