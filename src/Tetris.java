@@ -24,7 +24,7 @@ public class Tetris extends JFrame {
 		setLocationRelativeTo(null);
 		addKeyListener(new TAdapter());
 		setFocusable(true);
-		initEnd();
+		initUI();
 	}
 
 	public void reset() {
@@ -111,6 +111,8 @@ public class Tetris extends JFrame {
 				try {
 					openLink(new URL("https://github.com/SlowestLoris/Tetris/wiki").toURI());
 				} catch (Exception err) {};
+			} else if(keycode == 'T') {
+				
 			}
 		}
 	}
