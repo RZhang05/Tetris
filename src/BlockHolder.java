@@ -83,10 +83,10 @@ public class BlockHolder extends JPanel {
 	}
 
 	private void drawSquare(Graphics g, int x, int y, Block.Shape shape)  {
-		Color colors[] = { Color.WHITE, new Color(63, 61, 68), 
-				new Color(63, 61, 68), new Color(221, 95, 93), 
-				new Color(204, 76, 22), new Color(237, 165, 158), 
-				new Color(237, 165, 158), new Color(204, 76, 22)
+		Color colors[] = { new Color(0, 0, 0), new Color(170, 6, 6), 
+				new Color(3, 165, 43), new Color(1, 193, 181), 
+				new Color(109, 1, 191), new Color(191, 178, 0), 
+				new Color(201, 115, 2), new Color(0, 33, 201)
 		};
 
 		Color color = colors[shape.ordinal()];

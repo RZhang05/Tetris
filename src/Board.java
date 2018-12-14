@@ -15,6 +15,7 @@ public class Board extends JPanel implements ActionListener {
 	private Timer timer;
 	private boolean isFallingFinished = false, isStarted = false, isPaused = false;
 	private int curScore = 0, curX = 0, curY = 0, curms, delay = 400;
+	private Tetris parent;
 	private JLabel statusbar;
 	private BlockHolder placeholder;
 	private Block curPiece, blockHeld, nextBlock;
@@ -36,6 +37,7 @@ public class Board extends JPanel implements ActionListener {
 		timer = new Timer(delay, this);
 		timer.start();
 
+		this.parent = parent;
 		statusbar =  parent.getStatusBar();
 		placeholder = parent.getBlockHolder();
 		placeholder.updateNextBlock(nextBlock);
@@ -168,6 +170,7 @@ public class Board extends JPanel implements ActionListener {
 			timer.stop();
 			isStarted = false;
 			statusbar.setText("game over");
+			parent.reset();
 		}
 	}
 
@@ -253,9 +256,9 @@ public class Board extends JPanel implements ActionListener {
 
 	private void drawSquare(Graphics g, int x, int y, Block.Shape shape)  {
 		Color colors[] = { new Color(0, 0, 0), new Color(170, 6, 6), 
-				new Color(170, 6, 6), new Color(221, 95, 93), 
-				new Color(204, 76, 22), new Color(237, 165, 158), 
-				new Color(237, 165, 158), new Color(204, 76, 22)
+				new Color(3, 165, 43), new Color(1, 193, 181), 
+				new Color(109, 1, 191), new Color(191, 178, 0), 
+				new Color(201, 115, 2), new Color(0, 33, 201)
 		};
 
 		Color color = colors[shape.ordinal()];
