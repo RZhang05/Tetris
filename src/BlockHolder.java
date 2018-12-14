@@ -9,8 +9,8 @@ import javax.swing.*;
 
 public class BlockHolder extends JPanel {
 	//fields
-	private final int BOARD_WIDTH = 21, BOARD_HEIGHT = 6;
-	private Block curPiece;
+	private final int BOARD_WIDTH = 21, BOARD_HEIGHT = 6, OFFSET_BH = 6, OFFSET_NB = 15;
+	private Block blockHeld, nextBlock;
 	private Block.Shape[] board;
 
 	//constructors
@@ -18,19 +18,27 @@ public class BlockHolder extends JPanel {
 		init();
 	}
 	
-	public void update(Block newBlock) {
-		curPiece = newBlock;
+	public void updateBlockHeld(Block newBlock) {
+		blockHeld = newBlock;
+		repaint();
+	}
+	
+	public void updateNextBlock(Block newBlock) {
+		nextBlock = newBlock;
 		repaint();
 	}
 
 	//methods
 	private void init() {
-		curPiece = new Block();
+		blockHeld = new Block();
+		nextBlock = new Block();
 		board = new Block.Shape[BOARD_WIDTH * BOARD_HEIGHT];
 		clearBoard();
 		setBackground(Color.WHITE);
 		setPreferredSize(new Dimension(350,100));
-		JLabel info = new JLabel("Current block held: ");
+		JLabel info = new JLabel("Current block held:            ");
+		add(info);
+		info = new JLabel("Next block: ");
 		add(info);
 	}
 
@@ -38,7 +46,6 @@ public class BlockHolder extends JPanel {
 	private Block.Shape shapeAt(int x, int y) { return board[(y * BOARD_WIDTH) + x]; }
 
 	private void draw(Graphics g) {
-		Dimension size = getSize();
 		int boardTop = -25;
 
 		for (int i=0;i<BOARD_HEIGHT;i++) {
@@ -48,11 +55,18 @@ public class BlockHolder extends JPanel {
 				if (shape != Block.Shape.NoShape) drawSquare(g, 0 + j * squareHeight(), boardTop + i * squareHeight(), shape);
 			}
 		}
-		if (curPiece.getShape() != Block.Shape.NoShape) {
+		if (blockHeld.getShape() != Block.Shape.NoShape) {
 			for (int i=0;i<4;i++) {
-				int x = 11 + curPiece.x(i);
-				int y = curPiece.y(i);
-				drawSquare(g, 0 + x * squareHeight(), boardTop + (BOARD_HEIGHT - y - 1) * squareHeight(), curPiece.getShape());
+				int x = OFFSET_BH + blockHeld.x(i);
+				int y = blockHeld.y(i);
+				drawSquare(g, 0 + x * squareHeight(), boardTop + (BOARD_HEIGHT - y - 1) * squareHeight(), blockHeld.getShape());
+			}   
+		}
+		if (nextBlock.getShape() != Block.Shape.NoShape) {
+			for (int i=0;i<4;i++) {
+				int x = OFFSET_NB + nextBlock.x(i);
+				int y = nextBlock.y(i);
+				drawSquare(g, 0 + x * squareHeight(), boardTop + (BOARD_HEIGHT - y - 1) * squareHeight(), nextBlock.getShape());
 			}   
 		}
 	}

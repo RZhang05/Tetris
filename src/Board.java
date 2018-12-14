@@ -17,7 +17,7 @@ public class Board extends JPanel implements ActionListener {
 	private int curScore = 0, curX = 0, curY = 0, curms, delay = 400;
 	private JLabel statusbar;
 	private BlockHolder placeholder;
-	private Block curPiece, blockHeld;
+	private Block curPiece, blockHeld, nextBlock;
 	private Block.Shape[] board;
 
 	//constructors
@@ -30,11 +30,15 @@ public class Board extends JPanel implements ActionListener {
 		setFocusable(true);
 		curPiece = new Block();
 		blockHeld = new Block();
+		nextBlock = new Block();
+		nextBlock.setRandomShape();
+		
 		timer = new Timer(delay, this);
 		timer.start();
 
 		statusbar =  parent.getStatusBar();
 		placeholder = parent.getBlockHolder();
+		placeholder.updateNextBlock(nextBlock);
 		board = new Block.Shape[BOARD_WIDTH * BOARD_HEIGHT];
 		addKeyListener(new TAdapter());
 		clearBoard();
@@ -153,9 +157,11 @@ public class Board extends JPanel implements ActionListener {
 	}
 
 	private void newPiece()  {
-		curPiece.setRandomShape();
+		curPiece.setShape(nextBlock.getShape());
 		curX = BOARD_WIDTH / 2 + 1;
 		curY = BOARD_HEIGHT - 1 + curPiece.minY();
+		nextBlock.setRandomShape();
+		placeholder.updateNextBlock(nextBlock);
 
 		if (!tryMove(curPiece, curX, curY)) {
 			curPiece.setShape(Block.Shape.NoShape);
@@ -181,13 +187,13 @@ public class Board extends JPanel implements ActionListener {
 		if(blockHeld.getShape() == Block.Shape.NoShape) {
 			blockHeld = curPiece;
 			isFallingFinished = true;
-			placeholder.update(blockHeld);
+			placeholder.updateBlockHeld(blockHeld);
 		} else {
 			Block temp = curPiece;
 			curPiece = blockHeld;
 			blockHeld = temp;
 			loadPiece();
-			placeholder.update(blockHeld);
+			placeholder.updateBlockHeld(blockHeld);
 		}
 	}
 
@@ -246,8 +252,8 @@ public class Board extends JPanel implements ActionListener {
 	}
 
 	private void drawSquare(Graphics g, int x, int y, Block.Shape shape)  {
-		Color colors[] = { new Color(0, 0, 0), new Color(63, 61, 68), 
-				new Color(63, 61, 68), new Color(221, 95, 93), 
+		Color colors[] = { new Color(0, 0, 0), new Color(170, 6, 6), 
+				new Color(170, 6, 6), new Color(221, 95, 93), 
 				new Color(204, 76, 22), new Color(237, 165, 158), 
 				new Color(237, 165, 158), new Color(204, 76, 22)
 		};
