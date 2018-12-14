@@ -22,7 +22,6 @@ public class Board extends JPanel implements ActionListener {
 	private BlockHolder placeholder;
 	private Block curPiece, blockHeld, nextBlock;
 	private Block.Shape[] board;
-	private Scanner sc;
 
 	//constructors
 	public Board(Tetris parent) {
@@ -51,7 +50,7 @@ public class Board extends JPanel implements ActionListener {
 		setPreferredSize(new Dimension(350,840));
 
 		try {
-			sc = new Scanner(new File("src/resources/scores.txt"));
+			sc = new Scanner(new File("src/resources/highscores.txt"));
 		} catch (Exception e) {System.out.println(e);};
 	}
 
@@ -173,15 +172,23 @@ public class Board extends JPanel implements ActionListener {
 		placeholder.updateNextBlock(nextBlock);
 
 		if (!tryMove(curPiece, curX, curY)) {
+			try {
+				System.setOut(new PrintStream(new FileOutputStream("src/resources/highscores.txt")));
+			} catch(Exception e) {};
 			boolean done = false;
+			ArrayList<String> toDo = new ArrayList<String>();
 			while(sc.hasNextInt()) {
 				int score = sc.nextInt();
 				if(score <= curScore && !done) {
 					done = true;
-					System.out.println(curScore);
+					toDo.add(""+ curScore);
 				}
-				System.out.println(score);
+				toDo.add(""+score);
+				if(toDo.size()==10) break;
 			}
+			sc.close();
+			for(int i=0;i<toDo.size();i++) System.out.println(toDo.get(i));
+			System.out.flush();
 			curPiece.setShape(Block.Shape.NoShape);
 			timer.stop();
 			isStarted = false;
@@ -204,16 +211,17 @@ public class Board extends JPanel implements ActionListener {
 
 	private void holdBlock() {
 		if(blockHeld.getShape() == Block.Shape.NoShape) {
-			blockHeld = curPiece;
-			isFallingFinished = true;
+			blockHeld.setShape(curPiece.getShape());
+			newPiece();
 			placeholder.updateBlockHeld(blockHeld);
-		} else {
-			Block temp = curPiece;
-			curPiece = blockHeld;
-			blockHeld = temp;
-			loadPiece();
-			placeholder.updateBlockHeld(blockHeld);
+			return;
 		}
+		Block temp = new Block();
+		temp.setShape(curPiece.getShape());
+		curPiece.setShape(blockHeld.getShape());
+		blockHeld.setShape(temp.getShape());
+		loadPiece();
+		placeholder.updateBlockHeld(blockHeld);
 	}
 
 	private boolean tryMove(Block newPiece, int newX, int newY) {
