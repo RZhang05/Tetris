@@ -7,7 +7,9 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 import javax.swing.*;
+import java.io.*;
 
 public class Board extends JPanel implements ActionListener {
 	//fields
@@ -20,6 +22,7 @@ public class Board extends JPanel implements ActionListener {
 	private BlockHolder placeholder;
 	private Block curPiece, blockHeld, nextBlock;
 	private Block.Shape[] board;
+	private Scanner sc;
 
 	//constructors
 	public Board(Tetris parent) {
@@ -33,7 +36,7 @@ public class Board extends JPanel implements ActionListener {
 		blockHeld = new Block();
 		nextBlock = new Block();
 		nextBlock.setRandomShape();
-		
+
 		timer = new Timer(delay, this);
 		timer.start();
 
@@ -46,6 +49,10 @@ public class Board extends JPanel implements ActionListener {
 		clearBoard();
 		setBackground(Color.BLACK);
 		setPreferredSize(new Dimension(350,840));
+
+		try {
+			sc = new Scanner(new File("src/resources/scores.txt"));
+		} catch (Exception e) {System.out.println(e);};
 	}
 
 	@Override
@@ -166,6 +173,15 @@ public class Board extends JPanel implements ActionListener {
 		placeholder.updateNextBlock(nextBlock);
 
 		if (!tryMove(curPiece, curX, curY)) {
+			boolean done = false;
+			while(sc.hasNextInt()) {
+				int score = sc.nextInt();
+				if(score <= curScore && !done) {
+					done = true;
+					System.out.println(curScore);
+				}
+				System.out.println(score);
+			}
 			curPiece.setShape(Block.Shape.NoShape);
 			timer.stop();
 			isStarted = false;
