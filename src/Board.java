@@ -22,6 +22,7 @@ public class Board extends JPanel implements ActionListener {
 	private BlockHolder placeholder;
 	private Block curPiece, blockHeld, nextBlock;
 	private Block.Shape[] board;
+	private Scanner sc;
 
 	//constructors
 	public Board(Tetris parent) {
@@ -186,9 +187,7 @@ public class Board extends JPanel implements ActionListener {
 				toDo.add(""+score);
 				if(toDo.size()==10) break;
 			}
-			sc.close();
 			for(int i=0;i<toDo.size();i++) System.out.println(toDo.get(i));
-			System.out.flush();
 			curPiece.setShape(Block.Shape.NoShape);
 			timer.stop();
 			isStarted = false;
