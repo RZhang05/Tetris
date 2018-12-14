@@ -12,7 +12,7 @@ import javax.swing.*;
 public class Board extends JPanel implements ActionListener {
 	//fields
 	private final int BOARD_WIDTH = 10, BOARD_HEIGHT = 24;
-	private Timer timer, seconds;
+	private Timer timer;
 	private boolean isFallingFinished = false, isStarted = false, isPaused = false;
 	private int curScore = 0, curX = 0, curY = 0, curms, delay = 400;
 	private JLabel statusbar;
@@ -132,11 +132,11 @@ public class Board extends JPanel implements ActionListener {
 			if (!tryMove(curPiece, curX, newY - 1)) break;
 			--newY;
 		}
-		pieceDropped();
+		blockDropped();
 	}
 
 	private void oneLineDown()  {
-		if (!tryMove(curPiece, curX, curY - 1)) pieceDropped();
+		if (!tryMove(curPiece, curX, curY - 1)) blockDropped();
 	}
 
 
@@ -144,7 +144,7 @@ public class Board extends JPanel implements ActionListener {
 		for (int i=0;i<BOARD_HEIGHT * BOARD_WIDTH;i++) board[i] = Block.Shape.NoShape;
 	}
 
-	private void pieceDropped() {
+	private void blockDropped() {
 		for (int i=0;i<4;i++) {
 			int x = curX + curPiece.x(i);
 			int y = curY - curPiece.y(i);
