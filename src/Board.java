@@ -174,20 +174,20 @@ public class Board extends JPanel implements ActionListener {
 
 		if (!tryMove(curPiece, curX, curY)) {
 			try {
-				System.setOut(new PrintStream(new FileOutputStream("src/resources/highscores.txt")));
-			} catch(Exception e) {};
-			boolean done = false;
-			ArrayList<String> toDo = new ArrayList<String>();
-			while(sc.hasNextInt()) {
-				int score = sc.nextInt();
-				if(score <= curScore && !done) {
-					done = true;
-					toDo.add(""+ curScore);
+				boolean done = false;
+				ArrayList<String> toDo = new ArrayList<String>();
+				while(sc.hasNextInt()) {
+					int score = sc.nextInt();
+					if(score <= curScore && !done) {
+						done = true;
+						toDo.add(""+ curScore);
+					}
+					toDo.add(""+score);
+					if(toDo.size()==10) break;
 				}
-				toDo.add(""+score);
-				if(toDo.size()==10) break;
-			}
-			for(int i=0;i<toDo.size();i++) System.out.println(toDo.get(i));
+				System.setOut(new PrintStream(new FileOutputStream("src/resources/highscores.txt")));
+				for(int i=0;i<toDo.size();i++) System.out.println(toDo.get(i));
+			} catch(Exception e) {};
 			curPiece.setShape(Block.Shape.NoShape);
 			timer.stop();
 			isStarted = false;
