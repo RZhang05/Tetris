@@ -18,5 +18,6 @@ In order of importance:
 - [x] Main Menu (2 days)
 - [ ] Music (1 day)
 - [ ] High Scores (1 day)
+- [ ] Add ability to be resizable
 
 
