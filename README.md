@@ -15,7 +15,7 @@ In order of importance:
 - [x] Tetris framework (2 days)
 - [x] Scoring (1 day)
 - [x] Additional Tetris features (1-3 days)
-- [ ] Main Menu (2 days)
+- [x] Main Menu (2 days)
 - [ ] Music (1 day)
 - [ ] High Scores (1 day)
 
