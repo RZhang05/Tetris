@@ -6,7 +6,12 @@
  */
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.net.*;
+import java.util.Scanner;
+
 import javax.imageio.*;
 import javax.swing.*;
 
@@ -16,6 +21,7 @@ public class Tetris extends JFrame {
 	private BlockHolder placeholder;
 	private JButton start, end;
 	private Board board;
+	private PrintStream stdout = System.out;
 
 	public Tetris() {
 		setTitle("Tetris");
@@ -32,7 +38,7 @@ public class Tetris extends JFrame {
 		revalidate();
 		initEnd();
 	}
-	
+
 	private void initEnd() {
 		end = new JButton();
 		try {
@@ -91,20 +97,20 @@ public class Tetris extends JFrame {
 	public BlockHolder getBlockHolder() {
 		return placeholder;
 	}
-	
+
 	public void openLink(URI uri) {
 		Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
-	    if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
-	        try {
-	            desktop.browse(uri);
-	        } catch (Exception e) {};
-	    }
+		if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+			try {
+				desktop.browse(uri);
+			} catch (Exception e) {};
+		}
 	}
-	
+
 	class TAdapter extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent e) {
-
+			
 			int keycode = e.getKeyCode();
 
 			if(keycode == 'H') {
@@ -112,7 +118,17 @@ public class Tetris extends JFrame {
 					openLink(new URL("https://github.com/SlowestLoris/Tetris/wiki").toURI());
 				} catch (Exception err) {};
 			} else if(keycode == 'T') {
-				
+				System.setOut(stdout);
+				try {
+					Scanner sc = new Scanner(new File("src/resources/highscores.txt"));
+					String S = "These are the top scores:\n";
+					while(sc.hasNextLine()) {
+						String cur = sc.next();
+						int score = sc.nextInt();
+						S += cur + " " + score + "\n";
+					}
+					JOptionPane.showMessageDialog(null, S);
+				} catch (Exception err) {System.out.println(err);};
 			}
 		}
 	}
@@ -123,6 +139,6 @@ public class Tetris extends JFrame {
 			game.setVisible(true);
 		});
 	}
-	
-	
+
+
 }

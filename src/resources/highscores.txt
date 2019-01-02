@@ -1,10 +1,10 @@
-200
-0
-0
-0
-0
-0
-0
-0
-0
-0
+testuser 2200
+testuser 1500
+testuser 1300
+testuser 300
+unknown 200
+ fail 100
+testuser 100
+unknown 0
+unknown 0
+unknown 0

@@ -173,26 +173,30 @@ public class Board extends JPanel implements ActionListener {
 		placeholder.updateNextBlock(nextBlock);
 
 		if (!tryMove(curPiece, curX, curY)) {
-			try {
-				boolean done = false;
-				ArrayList<String> toDo = new ArrayList<String>();
-				while(sc.hasNextInt()) {
-					int score = sc.nextInt();
-					if(score <= curScore && !done) {
-						done = true;
-						toDo.add(""+ curScore);
-					}
-					toDo.add(""+score);
-					if(toDo.size()==10) break;
-				}
-				System.setOut(new PrintStream(new FileOutputStream("src/resources/highscores.txt")));
-				for(int i=0;i<toDo.size();i++) System.out.println(toDo.get(i));
-			} catch(Exception e) {};
 			curPiece.setShape(Block.Shape.NoShape);
 			timer.stop();
 			isStarted = false;
 			statusbar.setText("game over");
 			parent.reset();
+			
+			String name = JOptionPane.showInputDialog("Please enter your username: ");
+			try {
+				boolean done = false;
+				ArrayList<String> toDo = new ArrayList<String>();
+				while(sc.hasNextLine()) {
+					String cur = sc.next();
+					int score = sc.nextInt();
+					if(score <= curScore && !done) {
+						done = true;
+						toDo.add(name + " " + curScore);
+					}
+					toDo.add(cur + " " + score);
+					if(toDo.size()==10) break;
+				}
+				System.setOut(new PrintStream(new FileOutputStream("src/resources/highscores.txt")));
+				for(int i=0;i<9;i++) System.out.println(toDo.get(i));
+				System.out.print(toDo.get(9));
+			} catch(Exception e) {};
 		}
 	}
 
