@@ -48,7 +48,7 @@ public class Board extends JPanel implements ActionListener {
 		addKeyListener(new TAdapter());
 		clearBoard();
 		setBackground(Color.BLACK);
-		setPreferredSize(new Dimension(350,840));
+		setPreferredSize(new Dimension(200,480));
 
 		try {
 			sc = new Scanner(new File("src/resources/highscores.txt"));

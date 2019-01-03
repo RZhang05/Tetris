@@ -9,9 +9,10 @@ import javax.swing.*;
 
 public class BlockHolder extends JPanel {
 	//fields
-	private final int BOARD_WIDTH = 21, BOARD_HEIGHT = 6, OFFSET_BH = 6, OFFSET_NB = 15;
+	private final int BOARD_WIDTH = 21, BOARD_HEIGHT = 6, OFFSET_BH = 4, OFFSET_NB = 9;
 	private Block blockHeld, nextBlock;
 	private Block.Shape[] board;
+	private Font defFont = new Font("TimesRoman", Font.PLAIN, 12);
 
 	//constructors
 	public BlockHolder() {
@@ -35,10 +36,12 @@ public class BlockHolder extends JPanel {
 		board = new Block.Shape[BOARD_WIDTH * BOARD_HEIGHT];
 		clearBoard();
 		setBackground(Color.WHITE);
-		setPreferredSize(new Dimension(350,100));
-		JLabel info = new JLabel("Current block held:            ");
+		setPreferredSize(new Dimension(200,100));
+		JLabel info = new JLabel("Current block held:   ");
+		info.setFont(defFont);
 		add(info);
 		info = new JLabel("Next block: ");
+		info.setFont(defFont);
 		add(info);
 	}
 

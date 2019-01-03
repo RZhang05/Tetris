@@ -6,11 +6,10 @@
  */
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
+import java.awt.image.*;
+import java.io.*;
 import java.net.*;
-import java.util.Scanner;
+import java.util.*;
 
 import javax.imageio.*;
 import javax.swing.*;
@@ -25,7 +24,7 @@ public class Tetris extends JFrame {
 
 	public Tetris() {
 		setTitle("Tetris");
-		setSize(350, 940);
+		setSize(222, 655);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		addKeyListener(new TAdapter());
@@ -73,6 +72,17 @@ public class Tetris extends JFrame {
 		revalidate();
 	}
 
+	private Image resizeImage(Image srcImg, int w, int h){
+		BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2 = resizedImg.createGraphics();
+
+		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		g2.drawImage(srcImg, 0, 0, w, h, null);
+		g2.dispose();
+
+		return resizedImg;
+	}
+
 	private void initGame() {
 		placeholder = new BlockHolder();
 		add(placeholder, BorderLayout.SOUTH);
@@ -110,7 +120,7 @@ public class Tetris extends JFrame {
 	class TAdapter extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent e) {
-			
+
 			int keycode = e.getKeyCode();
 
 			if(keycode == 'H') {
