@@ -18,18 +18,30 @@ public class BlockHolder extends JPanel {
 	public BlockHolder() {
 		init();
 	}
-	
+
+	//methods
+
+	/**
+	 * Change the block held
+	 * @param newBlock
+	 */
 	public void updateBlockHeld(Block newBlock) {
 		blockHeld = newBlock;
 		repaint();
 	}
-	
+
+	/**
+	 * Change the next block
+	 * @param newBlock
+	 */
 	public void updateNextBlock(Block newBlock) {
 		nextBlock = newBlock;
 		repaint();
 	}
 
-	//methods
+	/**
+	 * Initialize the holder
+	 */
 	private void init() {
 		blockHeld = new Block();
 		nextBlock = new Block();
@@ -45,9 +57,28 @@ public class BlockHolder extends JPanel {
 		add(info);
 	}
 
-	private int squareHeight() { return (int) getSize().getHeight() / BOARD_HEIGHT; }
-	private Block.Shape shapeAt(int x, int y) { return board[(y * BOARD_WIDTH) + x]; }
+	/**
+	 * Return the size of a block square
+	 * @return length of square side
+	 */
+	private int squareHeight() { 
+		return (int) getSize().getHeight() / BOARD_HEIGHT; 
+	}
+	
+	/**
+	 * Retrieve the shape of the block at the specified coordinates
+	 * @param x
+	 * @param y
+	 * @return Shape of block 
+	 */
+	private Block.Shape shapeAt(int x, int y) { 
+		return board[(y * BOARD_WIDTH) + x]; 
+	}
 
+	/**
+	 * Draw the blockholder
+	 * @param g
+	 */
 	private void draw(Graphics g) {
 		int boardTop = -25;
 
@@ -74,18 +105,31 @@ public class BlockHolder extends JPanel {
 		}
 	}
 
+	/**
+	 * Draw the object
+	 */
 	@Override
 	public void paintComponent(Graphics g) { 
 		super.paintComponent(g);
 		draw(g);
 	}
 
-
+	/**
+	 * Clear the board
+	 */
 	private void clearBoard() {
 		for (int i=0;i<BOARD_HEIGHT * BOARD_WIDTH;i++) board[i] = Block.Shape.NoShape;
 	}
 
+	/**
+	 * Draws a square
+	 * @param g
+	 * @param x
+	 * @param y
+	 * @param shape
+	 */
 	private void drawSquare(Graphics g, int x, int y, Block.Shape shape)  {
+		//Tetris block colours
 		Color colors[] = { new Color(0, 0, 0), new Color(170, 6, 6), 
 				new Color(3, 165, 43), new Color(1, 193, 181), 
 				new Color(109, 1, 191), new Color(191, 178, 0), 
@@ -94,6 +138,7 @@ public class BlockHolder extends JPanel {
 
 		Color color = colors[shape.ordinal()];
 
+		//draw with bevel
 		g.setColor(color);
 		g.fillRect(x + 1, y + 1, squareHeight() - 2, squareHeight() - 2);
 

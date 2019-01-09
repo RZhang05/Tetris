@@ -30,38 +30,56 @@ public class Board extends JPanel implements ActionListener {
 	}
 
 	//methods
+
+	/**
+	 * Starts the game and initializes all variables
+	 * @param parent
+	 */
 	private void initBoard(Tetris parent) {
 		setFocusable(true);
+		//initialize all the blocks
 		curPiece = new Block();
 		blockHeld = new Block();
 		nextBlock = new Block();
+		//set the shape of the first block
 		nextBlock.setRandomShape();
 
+		//initialize timer
 		timer = new Timer(delay, this);
 		timer.start();
 
+		//initialize all global variables
 		this.parent = parent;
 		statusbar =  parent.getStatusBar();
 		placeholder = parent.getBlockHolder();
 		placeholder.updateNextBlock(nextBlock);
 		board = new Block.Shape[BOARD_WIDTH * BOARD_HEIGHT];
+
+		//prepare game screen
 		addKeyListener(new TAdapter());
 		clearBoard();
 		setBackground(Color.BLACK);
 		setPreferredSize(new Dimension(200,480));
 
+		//set Scanner to read in highscores text file
 		try {
 			sc = new Scanner(new File("src/resources/highscores.txt"));
 		} catch (Exception e) {System.out.println(e);};
 	}
 
+	/**
+	 * When an action occurs, move the current block down or make a new one
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		//if the current block has reached the end
 		if (isFallingFinished) {
 			isFallingFinished = false;
 			newPiece();
-		} else oneLineDown();
+		} else oneLineDown(); //else move the current block down one line
+		//keep count of current milliseconds
 		curms += 400;
+		//every 20 seconds timer speeds up so blocks fall faster (difficulty)
 		if(curms >= 20000 && delay > 100) {
 			curms = 0;
 			delay -= 50;
@@ -69,11 +87,34 @@ public class Board extends JPanel implements ActionListener {
 		}
 	}
 
-	private int squareWidth() { return (int) getSize().getWidth() / BOARD_WIDTH; }
-	private int squareHeight() { return (int) getSize().getHeight() / BOARD_HEIGHT; }
-	private Block.Shape shapeAt(int x, int y) { return board[(y * BOARD_WIDTH) + x]; }
+	/**
+	 * Calculates the width of a board square
+	 * @return width of a board square
+	 */
+	private int squareWidth() { 
+		return (int) getSize().getWidth() / BOARD_WIDTH; 
+	}
+	/**
+	 * Calculate the height of a board square
+	 * @return height of a board square
+	 */
+	private int squareHeight() { 
+		return (int) getSize().getHeight() / BOARD_HEIGHT; 
+	}
+	/**
+	 * Identifies what shape is at the current coordinates
+	 * @param x
+	 * @param y
+	 * @return Shape of the Block at the specified location
+	 */
+	private Block.Shape shapeAt(int x, int y) { 
+		//1d array used to represent 2d array
+		return board[(y * BOARD_WIDTH) + x]; 
+	}
 
-
+	/**
+	 * Starts the game
+	 */
 	public void start()  {
 		if (isPaused)
 			return;
@@ -87,6 +128,9 @@ public class Board extends JPanel implements ActionListener {
 		timer.start();
 	}
 
+	/**
+	 * Pauses the game
+	 */
 	private void pause()  {
 		if (!isStarted) return;
 
@@ -103,6 +147,10 @@ public class Board extends JPanel implements ActionListener {
 		repaint();
 	}
 
+	/**
+	 * Draw the game
+	 * @param g
+	 */
 	private void draw(Graphics g) {
 		Dimension size = getSize();
 		int boardTop = (int) size.getHeight() - BOARD_HEIGHT * squareHeight();
@@ -129,12 +177,18 @@ public class Board extends JPanel implements ActionListener {
 		}        
 	}
 
+	/**
+	 * Draws the object
+	 */
 	@Override
 	public void paintComponent(Graphics g) { 
 		super.paintComponent(g);
 		draw(g);
 	}
 
+	/**
+	 * Drops the current block down
+	 */
 	private void dropDown() {
 		int newY = curY;
 		while (newY > 0) {
@@ -144,15 +198,23 @@ public class Board extends JPanel implements ActionListener {
 		blockDropped();
 	}
 
+	/**
+	 * Move the current block down one line
+	 */
 	private void oneLineDown()  {
 		if (!tryMove(curPiece, curX, curY - 1)) blockDropped();
 	}
 
-
+	/**
+	 * Clears the board
+	 */
 	private void clearBoard() {
 		for (int i=0;i<BOARD_HEIGHT * BOARD_WIDTH;i++) board[i] = Block.Shape.NoShape;
 	}
 
+	/**
+	 * When a block is dropped remove all full lines and make a new block
+	 */
 	private void blockDropped() {
 		for (int i=0;i<4;i++) {
 			int x = curX + curPiece.x(i);
@@ -165,60 +227,80 @@ public class Board extends JPanel implements ActionListener {
 		if (!isFallingFinished) newPiece();
 	}
 
+	/**
+	 * Sets the shape of the next block and also checks if game is over
+	 */
 	private void newPiece()  {
+		//update the current block
 		curPiece.setShape(nextBlock.getShape());
+		//place the block roughly in the center at the top
 		curX = BOARD_WIDTH / 2 + 1;
 		curY = BOARD_HEIGHT - 1 + curPiece.minY();
+		//update the next block
 		nextBlock.setRandomShape();
 		placeholder.updateNextBlock(nextBlock);
 
-		if (!tryMove(curPiece, curX, curY)) {
-			curPiece.setShape(Block.Shape.NoShape);
-			timer.stop();
-			isStarted = false;
-			statusbar.setText("game over");
-			parent.reset();
-			
-			String name = JOptionPane.showInputDialog("Please enter your username: ");
-			try {
-				boolean done = false;
-				ArrayList<String> toDo = new ArrayList<String>();
-				while(sc.hasNextLine()) {
-					String cur = sc.next();
-					int score = sc.nextInt();
-					if(score <= curScore && !done) {
-						done = true;
-						toDo.add(name + " " + curScore);
-					}
-					toDo.add(cur + " " + score);
-					if(toDo.size()==10) break;
-				}
-				System.setOut(new PrintStream(new FileOutputStream("src/resources/highscores.txt")));
-				for(int i=0;i<9;i++) System.out.println(toDo.get(i));
-				System.out.print(toDo.get(9));
-			} catch(Exception e) {};
-		}
+		//if the new block can not be placed game is over
+		if (!tryMove(curPiece, curX, curY)) gameOver();
 	}
 
+	/**
+	 * Load in a piece at the top
+	 */
 	private void loadPiece() {
 		curX = BOARD_WIDTH / 2 + 1;
 		curY = BOARD_HEIGHT - 1 + curPiece.minY();
 
-		if (!tryMove(curPiece, curX, curY)) {
-			curPiece.setShape(Block.Shape.NoShape);
-			timer.stop();
-			isStarted = false;
-			statusbar.setText("game over");
-		}
+		//new piece can not be placed
+		if (!tryMove(curPiece, curX, curY)) gameOver();
 	}
 
+	/**
+	 * Runs the end game process
+	 */
+	private void gameOver() {
+		curPiece.setShape(Block.Shape.NoShape);
+		timer.stop();
+		isStarted = false;
+		statusbar.setText("game over");
+		parent.reset();
+
+		//Allows you to save your score
+		String name = JOptionPane.showInputDialog("Please enter your username: ");
+		try {
+			boolean done = false;
+			ArrayList<String> toDo = new ArrayList<String>();
+			//loop through and find where your score belongs
+			while(sc.hasNextLine()) {
+				String cur = sc.next();
+				int score = sc.nextInt();
+				if(score <= curScore && !done) { //where you score belongs
+					done = true;
+					toDo.add(name + " " + curScore);
+				}
+				toDo.add(cur + " " + score);
+				if(toDo.size()==10) break;
+			}
+			//set output to file
+			System.setOut(new PrintStream(new FileOutputStream("src/resources/highscores.txt")));
+			//replace old scores
+			for(int i=0;i<9;i++) System.out.println(toDo.get(i));
+			System.out.print(toDo.get(9)); //for no extra line which breaks the program
+		} catch(Exception e) {};
+	}
+
+	/**
+	 * Hold a block
+	 */
 	private void holdBlock() {
+		//if no block is currently held
 		if(blockHeld.getShape() == Block.Shape.NoShape) {
 			blockHeld.setShape(curPiece.getShape());
 			newPiece();
 			placeholder.updateBlockHeld(blockHeld);
 			return;
 		}
+		//switch current block and the block held
 		Block temp = new Block();
 		temp.setShape(curPiece.getShape());
 		curPiece.setShape(blockHeld.getShape());
@@ -227,49 +309,68 @@ public class Board extends JPanel implements ActionListener {
 		placeholder.updateBlockHeld(blockHeld);
 	}
 
+	/**
+	 * Check if block move is valid
+	 * @param newPiece
+	 * @param newX
+	 * @param newY
+	 * @return if the move is valid
+	 */
 	private boolean tryMove(Block newPiece, int newX, int newY) {
+		//check all points
 		for (int i=0;i<4;i++) {
 			int x = newX + newPiece.x(i);
 			int y = newY - newPiece.y(i);
-
+			//if its outside the board
 			if (x < 0 || x >= BOARD_WIDTH || y < 0 || y >= BOARD_HEIGHT) return false;
-
+			//if there is a block at that location
 			if (shapeAt(x, y) != Block.Shape.NoShape) return false;
 		}
 
+		//update curBlock
 		curPiece = newPiece;
 		curX = newX;
 		curY = newY;
 
 		repaint();
 
+		//move was valid
 		return true;
 	}
 
+	/**
+	 * Removes all full lines and updates score based on amount
+	 */
 	private void removeFullLines() {
+		//for scoring
 		int numFullLines = 0;
 
-		for (int i = BOARD_HEIGHT - 1; i >= 0; --i) {
+		//loop through the board
+		for (int i = BOARD_HEIGHT - 1; i >= 0; i--) {
 			boolean lineIsFull = true;
 
-			for (int j = 0; j < BOARD_WIDTH; ++j) {
+			for (int j = 0; j < BOARD_WIDTH; j++) {
+				//if there is no block in the line
 				if (shapeAt(j, i) == Block.Shape.NoShape) {
 					lineIsFull = false;
 					break;
 				}
 			}
 
+			//remove the line and set it to be the line above
 			if (lineIsFull) {
 				++numFullLines;
-				for (int k = i; k < BOARD_HEIGHT - 1; ++k) {
-					for (int j = 0; j < BOARD_WIDTH; ++j) {
+				for (int k = i; k < BOARD_HEIGHT - 1; k++) {
+					for (int j = 0; j < BOARD_WIDTH; j++) {
 						board[(k * BOARD_WIDTH) + j] = shapeAt(j, k + 1);
 					}
 				}
 			}
 		}
 
+		//update score based on number of lines removed
 		if (numFullLines > 0) {
+			//classic scoring system
 			if(numFullLines == 1) curScore += 100;
 			else if(numFullLines == 2) curScore += 300;
 			else if(numFullLines == 3) curScore += 500;
@@ -281,7 +382,15 @@ public class Board extends JPanel implements ActionListener {
 		}
 	}
 
+	/**
+	 * Draw a square with appropriate dimensions
+	 * @param g
+	 * @param x
+	 * @param y
+	 * @param shape
+	 */
 	private void drawSquare(Graphics g, int x, int y, Block.Shape shape)  {
+		//Tetris block colours
 		Color colors[] = { new Color(0, 0, 0), new Color(170, 6, 6), 
 				new Color(3, 165, 43), new Color(1, 193, 181), 
 				new Color(109, 1, 191), new Color(191, 178, 0), 
@@ -290,6 +399,7 @@ public class Board extends JPanel implements ActionListener {
 
 		Color color = colors[shape.ordinal()];
 
+		//drawing to give bevel look
 		g.setColor(color);
 		g.fillRect(x + 1, y + 1, squareWidth() - 2, squareHeight() - 2);
 
@@ -302,16 +412,23 @@ public class Board extends JPanel implements ActionListener {
 		g.drawLine(x + squareWidth() - 1, y + squareHeight() - 1, x + squareWidth() - 1, y + 1);
 	}
 
+	/**
+	 * Draw the indicator to show where the block would fall
+	 * @param g
+	 * @param x
+	 */
 	private void drawIndicator(Graphics g, int x) {
 		Color color = new Color(255,255,255,100);
 		g.setColor(color);
 		g.fillRect(x, 0, squareWidth()-1, (int)getSize().getHeight());
 	}
 
+	//Keyboard listener for controls
 	class TAdapter extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent e) {
 
+			//if game is not running
 			if (!isStarted || curPiece.getShape() == Block.Shape.NoShape) return;
 
 			int keycode = e.getKeyCode();
@@ -323,32 +440,40 @@ public class Board extends JPanel implements ActionListener {
 
 			if (isPaused) return;
 
+			//controls
 			switch (keycode) {
 
+			//move left
 			case KeyEvent.VK_LEFT:
 				tryMove(curPiece, curX - 1, curY);
 				break;
-
+			
+			//move right
 			case KeyEvent.VK_RIGHT:
 				tryMove(curPiece, curX + 1, curY);
 				break;
 
+			//rotate right
 			case 'Z':
 				tryMove(curPiece.rotateRight(), curX, curY);
 				break;
 
+			//rotate left
 			case KeyEvent.VK_UP:
 				tryMove(curPiece.rotateLeft(), curX, curY);
 				break;
 
+			//drop the block down
 			case KeyEvent.VK_SPACE:
 				dropDown();
 				break;
 
+			//move the block one line down
 			case KeyEvent.VK_DOWN:
 				oneLineDown();
 				break;
 
+			//hold the block
 			case KeyEvent.VK_SHIFT:
 				holdBlock();
 				break;

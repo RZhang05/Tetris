@@ -16,12 +16,14 @@ import javax.swing.*;
 
 public class Tetris extends JFrame {
 
+	//fields
 	private JLabel statusbar;
 	private BlockHolder placeholder;
 	private JButton start, end;
 	private Board board;
 	private PrintStream stdout = System.out;
 
+	//constructors
 	public Tetris() {
 		setTitle("Tetris");
 		setSize(222, 655);
@@ -32,12 +34,20 @@ public class Tetris extends JFrame {
 		initUI();
 	}
 
+	//methods
+	
+	/**
+	 * Reset the game
+	 */
 	public void reset() {
 		getContentPane().removeAll();
 		revalidate();
 		initEnd();
 	}
 
+	/**
+	 * Loads the end game screen
+	 */
 	private void initEnd() {
 		end = new JButton();
 		try {
@@ -55,6 +65,9 @@ public class Tetris extends JFrame {
 		revalidate();
 	}
 
+	/**
+	 * Loads the start game screen
+	 */
 	private void initUI() {
 		start = new JButton();
 		try {
@@ -72,6 +85,13 @@ public class Tetris extends JFrame {
 		revalidate();
 	}
 
+	/**
+	 * Resize an image
+	 * @param srcImg
+	 * @param w
+	 * @param h
+	 * @return new image with specified dimensions
+	 */
 	private Image resizeImage(Image srcImg, int w, int h){
 		BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2 = resizedImg.createGraphics();
@@ -83,6 +103,9 @@ public class Tetris extends JFrame {
 		return resizedImg;
 	}
 
+	/**
+	 * Load the game screen
+	 */
 	private void initGame() {
 		placeholder = new BlockHolder();
 		add(placeholder, BorderLayout.SOUTH);
@@ -100,14 +123,26 @@ public class Tetris extends JFrame {
 		revalidate();
 	}
 
+	/**
+	 * Allows access to statusbar
+	 * @return the statusbar
+	 */
 	public JLabel getStatusBar() {
 		return statusbar;
 	}
 
+	/**
+	 * Allows access to placeholder
+	 * @return the placeholder
+	 */
 	public BlockHolder getBlockHolder() {
 		return placeholder;
 	}
 
+	/**
+	 * Opens up a link using the desktop
+	 * @param uri
+	 */
 	public void openLink(URI uri) {
 		Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
 		if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
@@ -117,6 +152,7 @@ public class Tetris extends JFrame {
 		}
 	}
 
+	//allows for keyboard controls
 	class TAdapter extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent e) {
@@ -124,10 +160,12 @@ public class Tetris extends JFrame {
 			int keycode = e.getKeyCode();
 
 			if(keycode == 'H') {
+				//open up help screen on desktop
 				try {
 					openLink(new URL("https://github.com/SlowestLoris/Tetris/wiki").toURI());
 				} catch (Exception err) {};
 			} else if(keycode == 'T') {
+				//view high scores
 				System.setOut(stdout);
 				try {
 					Scanner sc = new Scanner(new File("src/resources/highscores.txt"));
@@ -144,6 +182,7 @@ public class Tetris extends JFrame {
 	}
 
 	public static void main(String[] args) {
+		//load game
 		EventQueue.invokeLater(() -> {
 			Tetris game = new Tetris();
 			game.setVisible(true);
