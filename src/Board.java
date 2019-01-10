@@ -1,15 +1,29 @@
 /*
- * Raymond Zhang
+ * Raymond Zhang 
  * Mr. Benum
  * ICS4UE
  * December 12, 2018
  */
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
-import javax.swing.*;
-import java.io.*;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.Timer;
 
 public class Board extends JPanel implements ActionListener {
 	//fields
@@ -23,6 +37,7 @@ public class Board extends JPanel implements ActionListener {
 	private Block curPiece, blockHeld, nextBlock;
 	private Block.Shape[] board;
 	private Scanner sc;
+	private Clip clip;
 
 	//constructors
 	public Board(Tetris parent) {
@@ -76,7 +91,10 @@ public class Board extends JPanel implements ActionListener {
 		if (isFallingFinished) {
 			isFallingFinished = false;
 			newPiece();
-		} else oneLineDown(); //else move the current block down one line
+		} else {
+			pieceFallNoise();
+			oneLineDown(); //else move the current block down one line
+		}
 		//keep count of current milliseconds
 		curms += 400;
 		//every 20 seconds timer speeds up so blocks fall faster (difficulty)
@@ -259,6 +277,7 @@ public class Board extends JPanel implements ActionListener {
 	 * Runs the end game process
 	 */
 	private void gameOver() {
+		gameOverNoise();
 		curPiece.setShape(Block.Shape.NoShape);
 		timer.stop();
 		isStarted = false;
@@ -322,9 +341,15 @@ public class Board extends JPanel implements ActionListener {
 			int x = newX + newPiece.x(i);
 			int y = newY - newPiece.y(i);
 			//if its outside the board
-			if (x < 0 || x >= BOARD_WIDTH || y < 0 || y >= BOARD_HEIGHT) return false;
+			if (x < 0 || x >= BOARD_WIDTH || y < 0 || y >= BOARD_HEIGHT) {
+				failNoise();
+				return false;
+			}
 			//if there is a block at that location
-			if (shapeAt(x, y) != Block.Shape.NoShape) return false;
+			if (shapeAt(x, y) != Block.Shape.NoShape) {
+				failNoise();
+				return false;
+			}
 		}
 
 		//update curBlock
@@ -333,7 +358,8 @@ public class Board extends JPanel implements ActionListener {
 		curY = newY;
 
 		repaint();
-
+		
+		pieceMovingNoise();
 		//move was valid
 		return true;
 	}
@@ -371,10 +397,19 @@ public class Board extends JPanel implements ActionListener {
 		//update score based on number of lines removed
 		if (numFullLines > 0) {
 			//classic scoring system
-			if(numFullLines == 1) curScore += 100;
-			else if(numFullLines == 2) curScore += 300;
-			else if(numFullLines == 3) curScore += 500;
-			else curScore += 800;
+			if(numFullLines == 1) {
+				oneLineClear();
+				curScore += 100;
+			} else if(numFullLines == 2) {
+				doubleLineClear();
+				curScore += 300;
+			} else if(numFullLines == 3) {
+				tripleLineClear();
+				curScore += 500;
+			} else {
+				quadLineClear();
+				curScore += 800;
+			}
 			statusbar.setText("Score: " + curScore);
 			isFallingFinished = true;
 			curPiece.setShape(Block.Shape.NoShape);
@@ -422,6 +457,176 @@ public class Board extends JPanel implements ActionListener {
 		g.setColor(color);
 		g.fillRect(x, 0, squareWidth()-1, (int)getSize().getHeight());
 	}
+	
+	/**
+	 * Play the game over sound
+	 */
+	private void gameOverNoise() {
+		try {
+			if(clip != null && clip.isOpen()) clip.stop();
+			// Open an audio input stream.           
+			File soundFile = new File("src/resources/sfx/SFX_GameOver.wav");
+			AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);              
+			// Get a sound clip resource.
+			clip = AudioSystem.getClip();
+			// Open audio clip and load samples from the audio input stream.
+			clip.open(audioIn);
+			clip.start();
+		} catch(Exception e) {e.printStackTrace();};
+	}
+	
+	/**
+	 * Play the piece falling sound
+	 */
+	private void pieceFallNoise() {
+		try {
+			if(clip != null && clip.isOpen()) clip.stop();
+			// Open an audio input stream.           
+			File soundFile = new File("src/resources/sfx/SFX_PieceFall.wav");
+			AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);              
+			// Get a sound clip resource.
+			clip = AudioSystem.getClip();
+			// Open audio clip and load samples from the audio input stream.
+			clip.open(audioIn);
+			clip.start();
+		} catch(Exception e) {e.printStackTrace();};
+	}
+	
+	/**
+	 * Play the piece falling sound
+	 */
+	private void pieceDropNoise() {
+		try {
+			if(clip != null && clip.isOpen()) clip.stop();
+			// Open an audio input stream.           
+			File soundFile = new File("src/resources/sfx/SFX_PieceHardDrop.wav");
+			AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);              
+			// Get a sound clip resource.
+			clip = AudioSystem.getClip();
+			// Open audio clip and load samples from the audio input stream.
+			clip.open(audioIn);
+			clip.start();
+		} catch(Exception e) {e.printStackTrace();};
+	}
+	
+	/**
+	 * Play the piece hold sound
+	 */
+	private void pieceHoldNoise() {
+		try {
+			if(clip != null && clip.isOpen()) clip.stop();
+			// Open an audio input stream.           
+			File soundFile = new File("src/resources/sfx/SFX_PieceHold.wav");
+			AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);              
+			// Get a sound clip resource.
+			clip = AudioSystem.getClip();
+			// Open audio clip and load samples from the audio input stream.
+			clip.open(audioIn);
+			clip.start();
+		} catch(Exception e) {e.printStackTrace();};
+	}
+	
+	/**
+	 * Play the piece moving sound
+	 */
+	private void pieceMovingNoise() {
+		try {
+			if(clip != null && clip.isOpen()) clip.stop();
+			// Open an audio input stream.           
+			File soundFile = new File("src/resources/sfx/SFX_PieceMoveLR.wav");
+			AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);              
+			// Get a sound clip resource.
+			clip = AudioSystem.getClip();
+			// Open audio clip and load samples from the audio input stream.
+			clip.open(audioIn);
+			clip.start();
+		} catch(Exception e) {e.printStackTrace();};
+	}
+	
+	/**
+	 * Play the illegal move sound
+	 */
+	private void failNoise() {
+		try {
+			if(clip != null && clip.isOpen()) clip.stop();
+			// Open an audio input stream.           
+			File soundFile = new File("src/resources/sfx/SFX_PieceRotateFail.wav");
+			AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);              
+			// Get a sound clip resource.
+			clip = AudioSystem.getClip();
+			// Open audio clip and load samples from the audio input stream.
+			clip.open(audioIn);
+			clip.start();
+		} catch(Exception e) {e.printStackTrace();};
+	}
+	
+	/**
+	 * Play the one line cleared sound
+	 */
+	private void oneLineClear() {
+		try {
+			if(clip != null && clip.isOpen()) clip.stop();
+			// Open an audio input stream.           
+			File soundFile = new File("src/resources/sfx/SFX_SpecialLineClearSingle.wav");
+			AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);              
+			// Get a sound clip resource.
+			clip = AudioSystem.getClip();
+			// Open audio clip and load samples from the audio input stream.
+			clip.open(audioIn);
+			clip.start();
+		} catch(Exception e) {e.printStackTrace();};
+	}
+	
+	/**
+	 * Play the double line cleared sound
+	 */
+	private void doubleLineClear() {
+		try {
+			if(clip != null && clip.isOpen()) clip.stop();
+			// Open an audio input stream.           
+			File soundFile = new File("src/resources/sfx/SFX_SpecialLineClearDouble.wav");
+			AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);              
+			// Get a sound clip resource.
+			clip = AudioSystem.getClip();
+			// Open audio clip and load samples from the audio input stream.
+			clip.open(audioIn);
+			clip.start();
+		} catch(Exception e) {e.printStackTrace();};
+	}
+	
+	/**
+	 * Play the triple line cleared sound
+	 */
+	private void tripleLineClear() {
+		try {
+			if(clip != null && clip.isOpen()) clip.stop();
+			// Open an audio input stream.           
+			File soundFile = new File("src/resources/sfx/SFX_SpecialLineClearTriple.wav");
+			AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);              
+			// Get a sound clip resource.
+			clip = AudioSystem.getClip();
+			// Open audio clip and load samples from the audio input stream.
+			clip.open(audioIn);
+			clip.start();
+		} catch(Exception e) {e.printStackTrace();};
+	}
+	
+	/**
+	 * Play the quad line cleared sound
+	 */
+	private void quadLineClear() {
+		try {
+			if(clip != null && clip.isOpen()) clip.stop();
+			// Open an audio input stream.           
+			File soundFile = new File("src/resources/sfx/SFX_SpecialTetris.wav");
+			AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);              
+			// Get a sound clip resource.
+			clip = AudioSystem.getClip();
+			// Open audio clip and load samples from the audio input stream.
+			clip.open(audioIn);
+			clip.start();
+		} catch(Exception e) {e.printStackTrace();};
+	}
 
 	//Keyboard listener for controls
 	class TAdapter extends KeyAdapter {
@@ -466,16 +671,19 @@ public class Board extends JPanel implements ActionListener {
 			//drop the block down
 			case KeyEvent.VK_SPACE:
 				dropDown();
+				pieceDropNoise();
 				break;
 
 			//move the block one line down
 			case KeyEvent.VK_DOWN:
 				oneLineDown();
+				pieceFallNoise();
 				break;
 
 			//hold the block
 			case KeyEvent.VK_SHIFT:
 				holdBlock();
+				pieceHoldNoise();
 				break;
 			}
 		}

@@ -4,8 +4,13 @@
  * ICS4UE
  * December 13, 2018
  */
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 public class BlockHolder extends JPanel {
 	//fields

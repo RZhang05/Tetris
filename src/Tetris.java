@@ -4,15 +4,32 @@
  * ICS4UE
  * December 12, 2018
  */
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.*;
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.awt.BorderLayout;
+import java.awt.Desktop;
+import java.awt.EventQueue;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.PrintStream;
+import java.net.URI;
+import java.net.URL;
+import java.util.Scanner;
 
-import javax.imageio.*;
-import javax.swing.*;
+import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 public class Tetris extends JFrame {
 
@@ -22,6 +39,7 @@ public class Tetris extends JFrame {
 	private JButton start, end;
 	private Board board;
 	private PrintStream stdout = System.out;
+	private Clip clip;
 
 	//constructors
 	public Tetris() {
@@ -35,7 +53,43 @@ public class Tetris extends JFrame {
 	}
 
 	//methods
-	
+
+	/**
+	 * Plays the in game music
+	 */
+	private void playGameTheme() {
+		try {
+			if(clip.isOpen()) clip.stop();
+			// Open an audio input stream.           
+			File soundFile = new File("src/resources/TetrisGameTheme.wav");
+			AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);              
+			// Get a sound clip resource.
+			clip = AudioSystem.getClip();
+			// Open audio clip and load samples from the audio input stream.
+			clip.open(audioIn);
+			clip.start();
+			clip.loop(clip.LOOP_CONTINUOUSLY);
+		} catch(Exception e) {e.printStackTrace();};
+	}
+
+	/**
+	 * Plays the menu music
+	 */
+	private void playMenuTheme() {
+		try {
+			if(clip != null && clip.isOpen()) clip.stop();
+			// Open an audio input stream.           
+			File soundFile = new File("src/resources/TetrisMenuTheme.wav");
+			AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);              
+			// Get a sound clip resource.
+			clip = AudioSystem.getClip();
+			// Open audio clip and load samples from the audio input stream.
+			clip.open(audioIn);
+			clip.start();
+			clip.loop(clip.LOOP_CONTINUOUSLY);
+		} catch(Exception e) {e.printStackTrace();};
+	}
+
 	/**
 	 * Reset the game
 	 */
@@ -49,6 +103,7 @@ public class Tetris extends JFrame {
 	 * Loads the end game screen
 	 */
 	private void initEnd() {
+		if(clip.isOpen()) clip.stop();
 		end = new JButton();
 		try {
 			end.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("resources/endscreen.png"))));
@@ -83,6 +138,7 @@ public class Tetris extends JFrame {
 		});
 		add(start);
 		revalidate();
+		playMenuTheme();
 	}
 
 	/**
@@ -120,6 +176,7 @@ public class Tetris extends JFrame {
 		board.requestFocus();
 
 		pack();
+		playGameTheme();
 		revalidate();
 	}
 
@@ -188,6 +245,5 @@ public class Tetris extends JFrame {
 			game.setVisible(true);
 		});
 	}
-
 
 }
