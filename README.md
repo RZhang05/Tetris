@@ -19,4 +19,12 @@ In order of importance:
 - [x] Music (1 day)
 - [x] High Scores (1 day)
 
+### Sources
+
+Bodnar, Jan. “Java Tetris.” JavaScript Snake Tutorial - Creating Snake Game in JavaScript, 29 Oct. 2018, zetcode.com/tutorials/javagamestutorial/tetris/. 
+
+Keating. “Close One JFrame without Closing Another?” StackOverflow, 22 Dec. 2009, stackoverflow.com/questions/1944446/close-one-jframe-without-closing-another. 
+
+“Tetris Wiki.” Tetris Wiki, Mar. 2006, tetris.wikia.com/wiki/Tetris_Wiki.
+
 
