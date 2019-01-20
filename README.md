@@ -16,8 +16,7 @@ In order of importance:
 - [x] Scoring (1 day)
 - [x] Additional Tetris features (1-3 days)
 - [x] Main Menu (2 days)
-- [ ] Music (1 day)
-- [ ] High Scores (1 day)
-- [ ] Add ability to be resizable
+- [x] Music (1 day)
+- [x] High Scores (1 day)
 
 
