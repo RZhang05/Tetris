@@ -11,9 +11,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -38,6 +39,7 @@ public class Board extends JPanel implements ActionListener {
 	private Block.Shape[] board;
 	private Scanner sc;
 	private Clip clip;
+	private URL url;
 
 	//constructors
 	public Board(Tetris parent) {
@@ -78,7 +80,8 @@ public class Board extends JPanel implements ActionListener {
 
 		//set Scanner to read in highscores text file
 		try {
-			sc = new Scanner(new File("src/resources/highscores.txt"));
+			File f = new File("highscores.txt");
+			sc = new Scanner(f);
 		} catch (Exception e) {System.out.println(e);};
 	}
 
@@ -139,7 +142,6 @@ public class Board extends JPanel implements ActionListener {
 
 		isStarted = true;
 		isFallingFinished = false;
-		curScore = 0;
 		clearBoard();
 
 		newPiece();
@@ -300,12 +302,13 @@ public class Board extends JPanel implements ActionListener {
 				toDo.add(cur + " " + score);
 				if(toDo.size()==10) break;
 			}
+			
+			System.setOut(new PrintStream("highscores.txt"));
 			//set output to file
-			System.setOut(new PrintStream(new FileOutputStream("src/resources/highscores.txt")));
 			//replace old scores
 			for(int i=0;i<9;i++) System.out.println(toDo.get(i));
 			System.out.print(toDo.get(9)); //for no extra line which breaks the program
-		} catch(Exception e) {};
+		} catch(Exception e) {JOptionPane.showMessageDialog(null, e);};
 	}
 
 	/**
@@ -464,15 +467,14 @@ public class Board extends JPanel implements ActionListener {
 	private void gameOverNoise() {
 		try {
 			if(clip != null && clip.isOpen()) clip.stop();
-			// Open an audio input stream.           
-			File soundFile = new File("src/resources/sfx/SFX_GameOver.wav");
-			AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);              
+			// Open an audio input stream.
+			AudioInputStream audioIn = AudioSystem.getAudioInputStream(new BufferedInputStream(Tetris.class.getResourceAsStream("/resources/sfx/SFX_GameOver.wav")));              
 			// Get a sound clip resource.
 			clip = AudioSystem.getClip();
 			// Open audio clip and load samples from the audio input stream.
 			clip.open(audioIn);
 			clip.start();
-		} catch(Exception e) {e.printStackTrace();};
+		} catch(Exception e) {JOptionPane.showMessageDialog(null, e);};
 	}
 
 	/**
@@ -481,15 +483,14 @@ public class Board extends JPanel implements ActionListener {
 	private void pieceFallNoise() {
 		try {
 			if(clip != null && clip.isOpen()) clip.stop();
-			// Open an audio input stream.           
-			File soundFile = new File("src/resources/sfx/SFX_PieceFall.wav");
-			AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);              
+			// Open an audio input stream.
+			AudioInputStream audioIn = AudioSystem.getAudioInputStream(new BufferedInputStream(Tetris.class.getResourceAsStream("/resources/sfx/SFX_PieceFall.wav")));              
 			// Get a sound clip resource.
 			clip = AudioSystem.getClip();
 			// Open audio clip and load samples from the audio input stream.
 			clip.open(audioIn);
 			clip.start();
-		} catch(Exception e) {e.printStackTrace();};
+		} catch(Exception e) {JOptionPane.showMessageDialog(null, e);};
 	}
 
 	/**
@@ -498,15 +499,14 @@ public class Board extends JPanel implements ActionListener {
 	private void pieceDropNoise() {
 		try {
 			if(clip != null && clip.isOpen()) clip.stop();
-			// Open an audio input stream.           
-			File soundFile = new File("src/resources/sfx/SFX_PieceHardDrop.wav");
-			AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);              
+			// Open an audio input stream.        
+			AudioInputStream audioIn = AudioSystem.getAudioInputStream(new BufferedInputStream(Tetris.class.getResourceAsStream("/resources/sfx/SFX_PieceHardDrop.wav")));            
 			// Get a sound clip resource.
 			clip = AudioSystem.getClip();
 			// Open audio clip and load samples from the audio input stream.
 			clip.open(audioIn);
 			clip.start();
-		} catch(Exception e) {e.printStackTrace();};
+		} catch(Exception e) {JOptionPane.showMessageDialog(null, e);};
 	}
 
 	/**
@@ -516,14 +516,13 @@ public class Board extends JPanel implements ActionListener {
 		try {
 			if(clip != null && clip.isOpen()) clip.stop();
 			// Open an audio input stream.           
-			File soundFile = new File("src/resources/sfx/SFX_PieceHold.wav");
-			AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);              
+			AudioInputStream audioIn = AudioSystem.getAudioInputStream(new BufferedInputStream(Tetris.class.getResourceAsStream("/resources/sfx/SFX_PieceHold.wav")));               
 			// Get a sound clip resource.
 			clip = AudioSystem.getClip();
 			// Open audio clip and load samples from the audio input stream.
 			clip.open(audioIn);
 			clip.start();
-		} catch(Exception e) {e.printStackTrace();};
+		} catch(Exception e) {JOptionPane.showMessageDialog(null, e);};
 	}
 
 	/**
@@ -533,14 +532,13 @@ public class Board extends JPanel implements ActionListener {
 		try {
 			if(clip != null && clip.isOpen()) clip.stop();
 			// Open an audio input stream.           
-			File soundFile = new File("src/resources/sfx/SFX_PieceMoveLR.wav");
-			AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);              
+			AudioInputStream audioIn = AudioSystem.getAudioInputStream(new BufferedInputStream(Tetris.class.getResourceAsStream("/resources/sfx/SFX_PieceMoveLR.wav")));              
 			// Get a sound clip resource.
 			clip = AudioSystem.getClip();
 			// Open audio clip and load samples from the audio input stream.
 			clip.open(audioIn);
 			clip.start();
-		} catch(Exception e) {e.printStackTrace();};
+		} catch(Exception e) {JOptionPane.showMessageDialog(null, e);};
 	}
 
 	/**
@@ -550,14 +548,13 @@ public class Board extends JPanel implements ActionListener {
 		try {
 			if(clip != null && clip.isOpen()) clip.stop();
 			// Open an audio input stream.           
-			File soundFile = new File("src/resources/sfx/SFX_PieceRotateFail.wav");
-			AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);              
+			AudioInputStream audioIn = AudioSystem.getAudioInputStream(new BufferedInputStream(Tetris.class.getResourceAsStream("/resources/sfx/SFX_PieceRotateFail.wav")));               
 			// Get a sound clip resource.
 			clip = AudioSystem.getClip();
 			// Open audio clip and load samples from the audio input stream.
 			clip.open(audioIn);
 			clip.start();
-		} catch(Exception e) {e.printStackTrace();};
+		} catch(Exception e) {JOptionPane.showMessageDialog(null, e);};
 	}
 
 	/**
@@ -567,14 +564,13 @@ public class Board extends JPanel implements ActionListener {
 		try {
 			if(clip != null && clip.isOpen()) clip.stop();
 			// Open an audio input stream.           
-			File soundFile = new File("src/resources/sfx/SFX_SpecialLineClearSingle.wav");
-			AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);              
+			AudioInputStream audioIn = AudioSystem.getAudioInputStream(new BufferedInputStream(Tetris.class.getResourceAsStream("/resources/sfx/SFX_SpecialLineClearSingle.wav")));             
 			// Get a sound clip resource.
 			clip = AudioSystem.getClip();
 			// Open audio clip and load samples from the audio input stream.
 			clip.open(audioIn);
 			clip.start();
-		} catch(Exception e) {e.printStackTrace();};
+		} catch(Exception e) {JOptionPane.showMessageDialog(null, e);};
 	}
 
 	/**
@@ -584,14 +580,13 @@ public class Board extends JPanel implements ActionListener {
 		try {
 			if(clip != null && clip.isOpen()) clip.stop();
 			// Open an audio input stream.           
-			File soundFile = new File("src/resources/sfx/SFX_SpecialLineClearDouble.wav");
-			AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);              
+			AudioInputStream audioIn = AudioSystem.getAudioInputStream(new BufferedInputStream(Tetris.class.getResourceAsStream("/resources/sfx/SFX_SpecialLineClearDouble.wav")));              
 			// Get a sound clip resource.
 			clip = AudioSystem.getClip();
 			// Open audio clip and load samples from the audio input stream.
 			clip.open(audioIn);
 			clip.start();
-		} catch(Exception e) {e.printStackTrace();};
+		} catch(Exception e) {JOptionPane.showMessageDialog(null, e);};
 	}
 
 	/**
@@ -601,14 +596,13 @@ public class Board extends JPanel implements ActionListener {
 		try {
 			if(clip != null && clip.isOpen()) clip.stop();
 			// Open an audio input stream.           
-			File soundFile = new File("src/resources/sfx/SFX_SpecialLineClearTriple.wav");
-			AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);              
+			AudioInputStream audioIn = AudioSystem.getAudioInputStream(new BufferedInputStream(Tetris.class.getResourceAsStream("/resources/sfx/SFX_SpecialLineClearTriple.wav")));                
 			// Get a sound clip resource.
 			clip = AudioSystem.getClip();
 			// Open audio clip and load samples from the audio input stream.
 			clip.open(audioIn);
 			clip.start();
-		} catch(Exception e) {e.printStackTrace();};
+		} catch(Exception e) {JOptionPane.showMessageDialog(null, e);};
 	}
 
 	/**
@@ -617,15 +611,14 @@ public class Board extends JPanel implements ActionListener {
 	private void quadLineClear() {
 		try {
 			if(clip != null && clip.isOpen()) clip.stop();
-			// Open an audio input stream.           
-			File soundFile = new File("src/resources/sfx/SFX_SpecialTetris.wav");
-			AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);              
+			// Open an audio input stream.       
+			AudioInputStream audioIn = AudioSystem.getAudioInputStream(new BufferedInputStream(Tetris.class.getResourceAsStream("/resources/sfx/SFX_SpecialTetris.wav")));                        
 			// Get a sound clip resource.
 			clip = AudioSystem.getClip();
 			// Open audio clip and load samples from the audio input stream.
 			clip.open(audioIn);
 			clip.start();
-		} catch(Exception e) {e.printStackTrace();};
+		} catch(Exception e) {JOptionPane.showMessageDialog(null, e);};
 	}
 
 	//Keyboard listener for controls
