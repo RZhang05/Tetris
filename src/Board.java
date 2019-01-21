@@ -98,7 +98,7 @@ public class Board extends JPanel implements ActionListener {
 		//keep count of current milliseconds
 		curms += 400;
 		//every 20 seconds timer speeds up so blocks fall faster (difficulty)
-		if(curms >= 20000 && delay > 100) {
+		if(curms >= 20000 && delay > 50) {
 			curms = 0;
 			delay -= 50;
 			timer.setDelay(delay);
@@ -358,7 +358,7 @@ public class Board extends JPanel implements ActionListener {
 		curY = newY;
 
 		repaint();
-		
+
 		pieceMovingNoise();
 		//move was valid
 		return true;
@@ -457,7 +457,7 @@ public class Board extends JPanel implements ActionListener {
 		g.setColor(color);
 		g.fillRect(x, 0, squareWidth()-1, (int)getSize().getHeight());
 	}
-	
+
 	/**
 	 * Play the game over sound
 	 */
@@ -474,7 +474,7 @@ public class Board extends JPanel implements ActionListener {
 			clip.start();
 		} catch(Exception e) {e.printStackTrace();};
 	}
-	
+
 	/**
 	 * Play the piece falling sound
 	 */
@@ -491,7 +491,7 @@ public class Board extends JPanel implements ActionListener {
 			clip.start();
 		} catch(Exception e) {e.printStackTrace();};
 	}
-	
+
 	/**
 	 * Play the piece falling sound
 	 */
@@ -508,7 +508,7 @@ public class Board extends JPanel implements ActionListener {
 			clip.start();
 		} catch(Exception e) {e.printStackTrace();};
 	}
-	
+
 	/**
 	 * Play the piece hold sound
 	 */
@@ -525,7 +525,7 @@ public class Board extends JPanel implements ActionListener {
 			clip.start();
 		} catch(Exception e) {e.printStackTrace();};
 	}
-	
+
 	/**
 	 * Play the piece moving sound
 	 */
@@ -542,7 +542,7 @@ public class Board extends JPanel implements ActionListener {
 			clip.start();
 		} catch(Exception e) {e.printStackTrace();};
 	}
-	
+
 	/**
 	 * Play the illegal move sound
 	 */
@@ -559,7 +559,7 @@ public class Board extends JPanel implements ActionListener {
 			clip.start();
 		} catch(Exception e) {e.printStackTrace();};
 	}
-	
+
 	/**
 	 * Play the one line cleared sound
 	 */
@@ -576,7 +576,7 @@ public class Board extends JPanel implements ActionListener {
 			clip.start();
 		} catch(Exception e) {e.printStackTrace();};
 	}
-	
+
 	/**
 	 * Play the double line cleared sound
 	 */
@@ -593,7 +593,7 @@ public class Board extends JPanel implements ActionListener {
 			clip.start();
 		} catch(Exception e) {e.printStackTrace();};
 	}
-	
+
 	/**
 	 * Play the triple line cleared sound
 	 */
@@ -610,7 +610,7 @@ public class Board extends JPanel implements ActionListener {
 			clip.start();
 		} catch(Exception e) {e.printStackTrace();};
 	}
-	
+
 	/**
 	 * Play the quad line cleared sound
 	 */
@@ -652,35 +652,35 @@ public class Board extends JPanel implements ActionListener {
 			case KeyEvent.VK_LEFT:
 				tryMove(curPiece, curX - 1, curY);
 				break;
-			
-			//move right
+
+				//move right
 			case KeyEvent.VK_RIGHT:
 				tryMove(curPiece, curX + 1, curY);
 				break;
 
-			//rotate right
+				//rotate right
 			case 'Z':
 				tryMove(curPiece.rotateRight(), curX, curY);
 				break;
 
-			//rotate left
+				//rotate left
 			case KeyEvent.VK_UP:
 				tryMove(curPiece.rotateLeft(), curX, curY);
 				break;
 
-			//drop the block down
+				//drop the block down
 			case KeyEvent.VK_SPACE:
 				dropDown();
 				pieceDropNoise();
 				break;
 
-			//move the block one line down
+				//move the block one line down
 			case KeyEvent.VK_DOWN:
 				oneLineDown();
 				pieceFallNoise();
 				break;
 
-			//hold the block
+				//hold the block
 			case KeyEvent.VK_SHIFT:
 				holdBlock();
 				pieceHoldNoise();

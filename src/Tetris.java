@@ -233,7 +233,7 @@ public class Tetris extends JFrame {
 						S += cur + " " + score + "\n";
 					}
 					JOptionPane.showMessageDialog(null, S);
-				} catch (Exception err) {System.out.println(err);};
+				} catch (Exception err) {JOptionPane.showMessageDialog(null, err);};
 			}
 		}
 	}

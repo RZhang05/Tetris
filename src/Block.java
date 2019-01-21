@@ -61,7 +61,7 @@ public class Block {
 		private void setX(int index, int x) { 
 			coords[index][0] = x; 
 		}
-		
+
 		/**
 		 * Set the y coordinate
 		 * @param index
@@ -70,7 +70,7 @@ public class Block {
 		private void setY(int index, int y) { 
 			coords[index][1] = y; 
 		}
-		
+
 		/**
 		 * Retrieve the x coordinate
 		 * @param index
@@ -79,7 +79,7 @@ public class Block {
 		public int x(int index) { 
 			return coords[index][0];
 		}
-		
+
 		/**
 		 * Retrieve the y coordinate
 		 * @param index
@@ -88,7 +88,7 @@ public class Block {
 		public int y(int index) { 
 			return coords[index][1]; 
 		}
-		
+
 		/**
 		 * Retrieve the shape
 		 * @return shape of the block

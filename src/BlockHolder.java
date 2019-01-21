@@ -69,7 +69,7 @@ public class BlockHolder extends JPanel {
 	private int squareHeight() { 
 		return (int) getSize().getHeight() / BOARD_HEIGHT; 
 	}
-	
+
 	/**
 	 * Retrieve the shape of the block at the specified coordinates
 	 * @param x
