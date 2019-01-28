@@ -12,7 +12,7 @@ Contributors:
 ### Main Tasks
 
 In order of importance:
-- [x] Tetris framework (2 days)
+- [x] Tetris framework (2 days) 
 - [x] Scoring (1 day)
 - [x] Additional Tetris features (1-3 days)
 - [x] Main Menu (2 days)
